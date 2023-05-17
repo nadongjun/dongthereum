@@ -1,0 +1,14 @@
+syntax = "proto3";
+package nadongjun.dongthereum.dongthereum;
+
+import "gogoproto/gogo.proto";
+import "dongthereum/params.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/nadongjun/dongthereum/x/dongthereum/types";
+
+// GenesisState defines the dongthereum module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}
