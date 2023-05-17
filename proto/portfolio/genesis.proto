@@ -1,0 +1,16 @@
+syntax = "proto3";
+package nadongjun.dongthereum.portfolio;
+
+import "gogoproto/gogo.proto";
+import "portfolio/params.proto";
+import "portfolio/project.proto";
+// this line is used by starport scaffolding # genesis/proto/import
+
+option go_package = "github.com/nadongjun/dongthereum/x/portfolio/types";
+
+// GenesisState defines the portfolio module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated Project projectList = 2 [(gogoproto.nullable) = false];
+  // this line is used by starport scaffolding # genesis/proto/state
+}

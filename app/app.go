@@ -103,6 +103,9 @@ import (
 	dongthereummodule "github.com/nadongjun/dongthereum/x/dongthereum"
 	dongthereummodulekeeper "github.com/nadongjun/dongthereum/x/dongthereum/keeper"
 	dongthereummoduletypes "github.com/nadongjun/dongthereum/x/dongthereum/types"
+	portfoliomodule "github.com/nadongjun/dongthereum/x/portfolio"
+	portfoliomodulekeeper "github.com/nadongjun/dongthereum/x/portfolio/keeper"
+	portfoliomoduletypes "github.com/nadongjun/dongthereum/x/portfolio/types"
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 )
 
@@ -158,6 +161,7 @@ var (
 		vesting.AppModuleBasic{},
 		monitoringp.AppModuleBasic{},
 		dongthereummodule.AppModuleBasic{},
+		portfoliomodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -231,6 +235,8 @@ type App struct {
 	ScopedMonitoringKeeper capabilitykeeper.ScopedKeeper
 
 	DongthereumKeeper dongthereummodulekeeper.Keeper
+
+	PortfolioKeeper portfoliomodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -268,6 +274,7 @@ func New(
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey, monitoringptypes.StoreKey,
 		dongthereummoduletypes.StoreKey,
+		portfoliomoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -397,6 +404,14 @@ func New(
 	)
 	dongthereumModule := dongthereummodule.NewAppModule(appCodec, app.DongthereumKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.PortfolioKeeper = *portfoliomodulekeeper.NewKeeper(
+		appCodec,
+		keys[portfoliomoduletypes.StoreKey],
+		keys[portfoliomoduletypes.MemStoreKey],
+		app.GetSubspace(portfoliomoduletypes.ModuleName),
+	)
+	portfolioModule := portfoliomodule.NewAppModule(appCodec, app.PortfolioKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Create static IBC router, add transfer route, then set and seal it
@@ -439,6 +454,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		dongthereumModule,
+		portfolioModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -467,6 +483,7 @@ func New(
 		paramstypes.ModuleName,
 		monitoringptypes.ModuleName,
 		dongthereummoduletypes.ModuleName,
+		portfoliomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -491,6 +508,7 @@ func New(
 		ibctransfertypes.ModuleName,
 		monitoringptypes.ModuleName,
 		dongthereummoduletypes.ModuleName,
+		portfoliomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -520,6 +538,7 @@ func New(
 		feegrant.ModuleName,
 		monitoringptypes.ModuleName,
 		dongthereummoduletypes.ModuleName,
+		portfoliomoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -545,6 +564,7 @@ func New(
 		transferModule,
 		monitoringModule,
 		dongthereumModule,
+		portfolioModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -735,6 +755,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(ibchost.ModuleName)
 	paramsKeeper.Subspace(monitoringptypes.ModuleName)
 	paramsKeeper.Subspace(dongthereummoduletypes.ModuleName)
+	paramsKeeper.Subspace(portfoliomoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

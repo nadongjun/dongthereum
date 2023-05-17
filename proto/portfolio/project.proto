@@ -1,0 +1,12 @@
+syntax = "proto3";
+package nadongjun.dongthereum.portfolio;
+
+option go_package = "github.com/nadongjun/dongthereum/x/portfolio/types";
+
+message Project {
+  string index = 1; 
+  string name = 2; 
+  string link = 3; 
+  
+}
+
